@@ -21,13 +21,13 @@ import java.io.File
 import java.util.concurrent.atomic.AtomicLong
 
 import org.apache.hadoop.fs.FSDataInputStream
-
 import org.apache.spark.SparkEnv
 import org.apache.spark.internal.Logging
 import org.apache.spark.memory.MemoryMode
 import org.apache.spark.sql.execution.datasources.OapException
 import org.apache.spark.sql.execution.datasources.oap.utils.PersistentMemoryConfigUtils
 import org.apache.spark.sql.internal.oap.OapConf
+import org.apache.spark.sql.oap.OapRuntime
 import org.apache.spark.storage.{BlockManager, TestBlockId}
 import org.apache.spark.unsafe.{PersistentMemoryPlatform, Platform}
 import org.apache.spark.util.Utils
@@ -51,7 +51,8 @@ case class MemoryBlockHolder(
     baseObject: AnyRef,
     baseOffset: Long,
     length: Long,
-    occupiedSize: Long)
+    occupiedSize: Long,
+    source: Option[String])
 
 private[sql] abstract class MemoryManager {
   /**
@@ -79,12 +80,16 @@ private[sql] abstract class MemoryManager {
    */
   def cacheGuardianMemory: Long
 
+  private[filecache] def allocate(size: Long): MemoryBlockHolder
+
   /**
    * Allocate a block of memory with given size. The actual occupied size of memory maybe different
    * with the requested size, that's depends on the underlying implementation.
    * @param size requested size of memory block
    */
-  private[filecache] def allocate(size: Long): MemoryBlockHolder
+  private[filecache] def allocate(size: Long, strategy: Option[AllocationStrategy])
+    : MemoryBlockHolder
+
   private[filecache] def free(block: MemoryBlockHolder): Unit
 
   @inline protected def toFiberCache(bytes: Array[Byte]): FiberCache = {
@@ -125,6 +130,11 @@ private[sql] abstract class MemoryManager {
   def getEmptyDataFiberCache(length: Long): FiberCache = {
     FiberCache(allocate(length))
   }
+
+  def getEmptyDataFiberCache(length: Long, strategy: Option[AllocationStrategy]): FiberCache = {
+    FiberCache(allocate(length, strategy))
+  }
+
   def stop(): Unit = {}
 }
 
@@ -212,13 +222,13 @@ private[filecache] class OffHeapMemoryManager(sparkEnv: SparkEnv)
 
   override def cacheGuardianMemory: Long = _cacheGuardianMemory
 
-  override private[filecache] def allocate(size: Long): MemoryBlockHolder = {
+  override private[filecache] def allocate(size: Long, source: String): MemoryBlockHolder = {
     val address = Platform.allocateMemory(size)
     _memoryUsed.getAndAdd(size)
     logDebug(s"request allocate $size memory, actual occupied size: " +
       s"${size}, used: $memoryUsed")
     // For OFF_HEAP, occupied size also equal to the size.
-    MemoryBlockHolder(CacheEnum.GENERAL, null, address, size, size)
+    MemoryBlockHolder(CacheEnum.GENERAL, null, address, size, size, Option.apply(source))
   }
 
   override private[filecache] def free(block: MemoryBlockHolder): Unit = {
@@ -230,6 +240,16 @@ private[filecache] class OffHeapMemoryManager(sparkEnv: SparkEnv)
 
   override def stop(): Unit = {
     memoryManager.releaseStorageMemory(oapMemory, MemoryMode.OFF_HEAP)
+  }
+
+  /**
+    * Allocate a block of memory with given size. The actual occupied size of memory maybe different
+    * with the requested size, that's depends on the underlying implementation.
+    *
+    * @param size requested size of memory block
+    */
+  override private[filecache] def allocate(size: Long, strategy: Option[AllocationStrategy]) = {
+    throw new RuntimeException("Unsupported Operation")
   }
 }
 
@@ -307,7 +327,65 @@ private[filecache] class PersistentMemoryManager(sparkEnv: SparkEnv)
     _memoryUsed.getAndAdd(-block.occupiedSize)
     logDebug(s"freed ${block.occupiedSize} memory, used: $memoryUsed")
   }
+
+  /**
+    * Allocate a block of memory with given size. The actual occupied size of memory maybe different
+    * with the requested size, that's depends on the underlying implementation.
+    *
+    * @param size requested size of memory block
+    */
+  override private[filecache] def allocate(size: Long, strategy: Option[AllocationStrategy]) = {
+    allocate(size)
+  }
 }
+
+
+/**
+  * A memory manager support multi-layerred memory allocation,
+  * it will be used for none evictable cache.
+  */
+private[filecache] class HybridMemoryManager(sparkEnv: SparkEnv)
+  extends MemoryManager with Logging {
+  private val (latencyMemoryManager, capacityMemoryManager) =
+    (new PersistentMemoryManager(sparkEnv), new OffHeapMemoryManager(sparkEnv))
+
+  /**
+    * Return the total memory used until now.
+    */
+  override def memoryUsed: Long = ???
+
+  /**
+    * The memory size used for index cache.
+    */
+  override def indexCacheMemory: Long = ???
+
+  /**
+    * The memory size used for data cache.
+    */
+  override def dataCacheMemory: Long = ???
+
+  /**
+    * The memory size used for cache guardian.
+    */
+  override def cacheGuardianMemory: Long = ???
+
+  /**
+    * Allocate a block of memory with given size. The actual occupied size of memory maybe different
+    * with the requested size, that's depends on the underlying implementation.
+    *
+    * @param size requested size of memory block
+    */
+  override private[filecache] def allocate(size: Long) = {
+    if (memoryUsed + size > dataCacheMemory) {
+      latencyMemoryManager.allocate(size)
+    }else {
+      capacityMemoryManager.allocate(size)
+    }
+  }
+
+  override private[filecache] def free(block: MemoryBlockHolder): Unit = ???
+}
+
 
 /**
  * A memory manager contains different sub memory manager for index and data.
@@ -352,7 +430,9 @@ private[filecache] class MixMemoryManager(sparkEnv: SparkEnv)
     (indexManager, dataManager)
   }
 
-  override private[filecache] def allocate(size: Long): MemoryBlockHolder = {
+  override private[filecache] def allocate(size: Long,
+                                           allocationStrategy: Option[AllocationStrategy]):
+    MemoryBlockHolder = {
     throw new UnsupportedOperationException("Can't do direct allocate for MixedMemoryManager")
   }
 
@@ -392,3 +472,9 @@ private[filecache] class MixMemoryManager(sparkEnv: SparkEnv)
   override def cacheGuardianMemory: Long =
     indexMemoryManager.cacheGuardianMemory + dataMemoryManager.cacheGuardianMemory
 }
+
+abstract class AllocationStrategy
+
+case class CapacityAllocation() extends AllocationStrategy
+
+case class LatencyAllocation() extends AllocationStrategy

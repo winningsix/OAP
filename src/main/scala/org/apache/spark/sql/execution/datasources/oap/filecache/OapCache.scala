@@ -20,13 +20,12 @@ package org.apache.spark.sql.execution.datasources.oap.filecache
 import java.util.concurrent.atomic.AtomicLong
 
 import scala.collection.JavaConverters._
-
 import com.google.common.cache._
-
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.execution.datasources.OapException
 import org.apache.spark.sql.oap.OapRuntime
 import org.apache.spark.util.Utils
+import sun.misc.GC.LatencyRequest
 
 trait OapCache {
   val dataFiberSize: AtomicLong = new AtomicLong(0)
@@ -81,6 +80,41 @@ trait OapCache {
   }
 
 }
+
+class NonEvictCache (dramSize: Long,
+                         pmSize: Long,
+                         cacheGuardianMemory: Long) extends OapCache with Logging {
+  override def get(fiber: FiberId): FiberCache = {
+    val strategy = if (cacheSize < pmSize) {
+      CapacityAllocation
+    } else {
+      LatencyAllocation
+    }
+    val fiberCache = cache(fiber, )
+      incFiberCountAndSize(fiber, 1, fiberCache.size())
+    }
+  }
+
+  override def getIfPresent(fiber: FiberId): FiberCache = ???
+
+  override def getFibers: Set[FiberId] = ???
+
+  override def invalidate(fiber: FiberId): Unit = ???
+
+  override def invalidateAll(fibers: Iterable[FiberId]): Unit = ???
+
+  override def cacheSize: Long = ???
+
+  override def cacheCount: Long = ???
+
+  override def cacheStats: CacheStats = ???
+
+  override def pendingFiberCount: Int = ???
+}
+
+// class CustomizedLRUCache extends OapCache with Logging {
+//
+// }
 
 class SimpleOapCache extends OapCache with Logging {
 
