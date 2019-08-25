@@ -17,15 +17,17 @@
 
 package org.apache.spark.sql.execution.datasources.oap.filecache
 
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
 
 import scala.collection.JavaConverters._
+
 import com.google.common.cache._
+
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.execution.datasources.OapException
 import org.apache.spark.sql.oap.OapRuntime
 import org.apache.spark.util.Utils
-import sun.misc.GC.LatencyRequest
 
 trait OapCache {
   val dataFiberSize: AtomicLong = new AtomicLong(0)
@@ -81,39 +83,65 @@ trait OapCache {
 
 }
 
-class NonEvictCache (dramSize: Long,
-                         pmSize: Long,
-                         cacheGuardianMemory: Long) extends OapCache with Logging {
+class NonEvictPMCache(dramSize: Long,
+                      pmSize: Long,
+                      cacheGuardianMemory: Long) extends OapCache with Logging {
+  // We don't bother the memory use of Simple Cache
+  private val cacheGuardian = new CacheGuardian(Int.MaxValue)
+  private val _cacheSize: AtomicLong = new AtomicLong(0)
+
+  val cacheMap : ConcurrentHashMap[FiberId, FiberCache] = new ConcurrentHashMap[FiberId, FiberCache]
+  cacheGuardian.start()
+
   override def get(fiber: FiberId): FiberCache = {
-    val strategy = if (cacheSize < pmSize) {
-      CapacityAllocation
+    if (cacheMap.containsKey(fiber)) {
+      cacheMap.get(fiber)
     } else {
-      LatencyAllocation
-    }
-    val fiberCache = cache(fiber, )
-      incFiberCountAndSize(fiber, 1, fiberCache.size())
+      if (cacheSize < pmSize) {
+        val fiberCache = cache(fiber)
+        incFiberCountAndSize(fiber, 1, fiberCache.size())
+        _cacheSize.addAndGet(1)
+        fiberCache.occupy()
+        fiberCache
+      } else {
+        val fiberCache = cache(fiber)
+        incFiberCountAndSize(fiber, 1, fiberCache.size())
+        fiberCache.occupy()
+        // We only use fiber for once, and CacheGuardian will dispose it after release.
+        cacheGuardian.addRemovalFiber(fiber, fiberCache)
+        decFiberCountAndSize(fiber, 1, fiberCache.size())
+        fiberCache
+      }
     }
   }
 
-  override def getIfPresent(fiber: FiberId): FiberCache = ???
+  override def getIfPresent(fiber: FiberId): FiberCache = {
+    if (cacheMap.contains(fiber)) {
+      cacheMap.get(fiber)
+    } else {
+      throw new RuntimeException("Key not found")
+    }
+  }
 
-  override def getFibers: Set[FiberId] = ???
+  override def getFibers: Set[FiberId] = {
+    throw new RuntimeException("Unsupported")
+  }
 
-  override def invalidate(fiber: FiberId): Unit = ???
+  override def invalidate(fiber: FiberId): Unit = {}
 
-  override def invalidateAll(fibers: Iterable[FiberId]): Unit = ???
+  override def invalidateAll(fibers: Iterable[FiberId]): Unit = {}
 
-  override def cacheSize: Long = ???
+  override def cacheSize: Long = {pmSize}
 
-  override def cacheCount: Long = ???
+  override def cacheCount: Long = {_cacheSize.get()}
 
-  override def cacheStats: CacheStats = ???
+  override def cacheStats: CacheStats = CacheStats()
 
-  override def pendingFiberCount: Int = ???
+  override def pendingFiberCount: Int = cacheGuardian.pendingFiberCount
 }
 
 // class CustomizedLRUCache extends OapCache with Logging {
-//
+// TODO
 // }
 
 class SimpleOapCache extends OapCache with Logging {
