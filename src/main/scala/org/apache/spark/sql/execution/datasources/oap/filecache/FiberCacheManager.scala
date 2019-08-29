@@ -101,7 +101,9 @@ private[sql] class FiberCacheManager(
 
   private val GUAVA_CACHE = "guava"
   private val SIMPLE_CACHE = "simple"
-  private val DEFAULT_CACHE_STRATEGY = GUAVA_CACHE
+
+  private val VMEM_CACHE = "vmem"
+  private val DEFAULT_CACHE_STRATEGY = "vmem"
 
   private var _dataCacheCompressEnable = sparkEnv.conf.get(
     OapConf.OAP_ENABLE_DATA_FIBER_CACHE_COMPRESSION)
@@ -128,6 +130,8 @@ private[sql] class FiberCacheManager(
         indexDataSeparationEnable)
     } else if (cacheName.equals(SIMPLE_CACHE)) {
       new SimpleOapCache()
+    } else if (cacheName.equals(VMEM_CACHE)) {
+      new VMemCache()
     } else {
       throw new OapException(s"Unsupported cache strategy $cacheName")
     }
