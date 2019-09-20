@@ -96,6 +96,11 @@ private[filecache] class CacheGuardian(maxMemory: Long) extends Thread with Logg
   }
 }
 
+private[sql] class VmemcacheManager(
+    sparkEnv: SparkEnv, memoryManager: MemoryManager) extends Logging {
+  // TODO implementation here
+}
+
 private[sql] class FiberCacheManager(
     sparkEnv: SparkEnv, memoryManager: MemoryManager) extends Logging {
 
