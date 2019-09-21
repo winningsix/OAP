@@ -22,14 +22,13 @@ import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
 import com.google.common.cache._
-import org.apache.hadoop.conf.Configuration
-import org.apache.parquet.format.CompressionCodec
 
 import org.apache.spark.SparkEnv
 import org.apache.spark.internal.Logging
 import org.apache.spark.sql.execution.datasources.OapException
 import org.apache.spark.sql.execution.datasources.oap.io._
 import org.apache.spark.sql.execution.datasources.oap.utils.CacheStatusSerDe
+import org.apache.spark.sql.execution.vectorized.OnHeapColumnVector
 import org.apache.spark.sql.internal.oap.OapConf
 import org.apache.spark.sql.oap.OapRuntime
 import org.apache.spark.util.Utils
@@ -96,13 +95,46 @@ private[filecache] class CacheGuardian(maxMemory: Long) extends Thread with Logg
   }
 }
 
+trait CacheManager {
+  def dumpDataToCache(
+    length: Long,
+    vector: OnHeapColumnVector,
+    total: Int,
+    dumpToCacheFunc: (MemoryBlockHolder, OnHeapColumnVector, Int) => FiberCache
+  ): FiberCache
+
+  def dumpDataToCache(
+    length: Long,
+    vector: OnHeapColumnVector,
+    total: Int,
+    dumpToCacheFunc: (OnHeapColumnVector, Int) => Array[Byte]
+  ): FiberCache
+}
+
 private[sql] class VmemcacheManager(
-    sparkEnv: SparkEnv, memoryManager: MemoryManager) extends Logging {
-  // TODO implementation here
+    sparkEnv: SparkEnv, memoryManager: MemoryManager)
+  extends CacheManager with Logging {
+  override def dumpDataToCache(
+    length: Long,
+    vector: OnHeapColumnVector,
+    total: Int,
+    dumpToCacheFunc: (MemoryBlockHolder, OnHeapColumnVector, Int) => FiberCache
+  ): FiberCache = { throw new RuntimeException("Unsupported operation") }
+
+  override def dumpDataToCache(
+    length: Long,
+    vector: OnHeapColumnVector,
+    total: Int,
+    dumpToCacheFunc: (
+      OnHeapColumnVector,
+      Int
+    ) => Array[Byte]
+  ): FiberCache = { throw new RuntimeException("Unsupported operation") }
 }
 
 private[sql] class FiberCacheManager(
-    sparkEnv: SparkEnv, memoryManager: MemoryManager) extends Logging {
+    sparkEnv: SparkEnv, memoryManager: MemoryManager)
+  extends CacheManager with Logging {
 
   private val GUAVA_CACHE = "guava"
   private val SIMPLE_CACHE = "simple"
@@ -227,6 +259,22 @@ private[sql] class FiberCacheManager(
     s"FiberCacheManager Statistics: { cacheCount=${cacheBackend.cacheCount}, " +
         s"usedMemory=${Utils.bytesToString(cacheSize)}, ${cacheStats.toDebugString} }"
   }
+
+  override def dumpDataToCache(
+    length: Long,
+    vector: OnHeapColumnVector,
+    total: Int,
+    dumpToCacheFunc: (MemoryBlockHolder, OnHeapColumnVector, Int) => FiberCache
+  ): FiberCache = {
+    dumpToCacheFunc(memoryManager.allocate(length), vector, total)
+  }
+
+  override def dumpDataToCache(
+    length: Long,
+    vector: OnHeapColumnVector,
+    total: Int,
+    dumpToCacheFunc: (OnHeapColumnVector, Int) => Array[Byte]
+  ): FiberCache = { throw new RuntimeException("Unsupported Operation") }
 }
 
 private[sql] class DataFileMetaCacheManager extends Logging {
