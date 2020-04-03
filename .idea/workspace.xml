@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00908221-2666-4652-bde9-8d580c757ed2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md" beforeDir="false" afterPath="$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/OAP-Architect-Overview.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/OAP-Architect-Overview.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,7 +17,7 @@
         <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/CacheMemoryAllocator.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="425">
-              <caret line="48" column="5" lean-forward="true" selection-start-line="48" selection-start-column="5" selection-end-line="48" selection-end-column="5" />
+              <caret line="48" column="5" selection-start-line="48" selection-start-column="5" selection-end-line="48" selection-end-column="5" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -28,7 +29,7 @@
         <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/test/scala/org/apache/spark/sql/execution/datasources/oap/filecache/IndexDataCacheSeparationSuite.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="276">
-              <caret line="209" column="26" lean-forward="true" selection-start-line="209" selection-start-column="26" selection-end-line="209" selection-end-column="26" />
+              <caret line="209" column="26" selection-start-line="209" selection-start-column="26" selection-end-line="209" selection-end-column="26" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -36,11 +37,20 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="638">
-              <caret line="460" column="3" lean-forward="true" selection-start-line="460" selection-start-column="3" selection-end-line="460" selection-end-column="3" />
+            <state relative-caret-position="774">
+              <caret line="417" lean-forward="true" selection-start-line="417" selection-end-line="417" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/README.md">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="51">
+              <caret line="3" selection-start-line="3" selection-end-line="3" />
             </state>
           </provider>
         </entry>
@@ -73,6 +83,7 @@
         <option value="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/CacheMemoryAllocator.scala" />
         <option value="$PROJECT_DIR$/oap-cache/oap/src/test/scala/org/apache/spark/sql/execution/datasources/oap/filecache/IndexDataCacheSeparationSuite.scala" />
         <option value="$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -87,8 +98,8 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="1527" />
-    <option name="y" value="123" />
+    <option name="x" value="1696" />
+    <option name="y" value="349" />
     <option name="width" value="2357" />
     <option name="height" value="2111" />
   </component>
@@ -138,7 +149,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="1018" y="82" width="1571" height="1407" extended-state="0" />
+    <frame x="695" y="83" width="1571" height="1407" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Image Layers" />
@@ -182,7 +193,7 @@
     <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/CacheMemoryAllocator.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="425">
-          <caret line="48" column="5" lean-forward="true" selection-start-line="48" selection-start-column="5" selection-end-line="48" selection-end-column="5" />
+          <caret line="48" column="5" selection-start-line="48" selection-start-column="5" selection-end-line="48" selection-end-column="5" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -192,7 +203,7 @@
     <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/test/scala/org/apache/spark/sql/execution/datasources/oap/filecache/IndexDataCacheSeparationSuite.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="276">
-          <caret line="209" column="26" lean-forward="true" selection-start-line="209" selection-start-column="26" selection-end-line="209" selection-end-column="26" />
+          <caret line="209" column="26" selection-start-line="209" selection-start-column="26" selection-end-line="209" selection-end-column="26" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -201,8 +212,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="638">
-          <caret line="460" column="3" lean-forward="true" selection-start-line="460" selection-start-column="3" selection-end-line="460" selection-end-column="3" />
+        <state relative-caret-position="774">
+          <caret line="417" lean-forward="true" selection-start-line="417" selection-end-line="417" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" selection-start-line="3" selection-end-line="3" />
         </state>
       </provider>
     </entry>

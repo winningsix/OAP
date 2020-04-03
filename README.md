@@ -1,4 +1,6 @@
-OAP - Optimized Analytics Packages for Spark is a project to optimize Spark by providing optimized implmentation of packages in various aspects including cache, native SQL engine, shuffle, data source and so on.
+# OAP - Optimized Analytics Package
+
+OAP is an optimized plugin package designed to accelerate Spark SQL performance by using index and cache technology. Indexing can improve Spark interative query peformance by as much as an order of magnitude, and caching delivers additonal Spark SQL query performance benefits. We support both DRAM and Intel DCPMM as cache media.
 
 Please refer the below documents for more information.
 
