@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00908221-2666-4652-bde9-8d580c757ed2" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/scala/org/apache/spark/sql/execution/datasources/oap/filecache/FiberCacheSuite.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManager.scala" beforeDir="false" afterPath="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManager.scala" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManagerSuite.scala" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManagerSuite.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/internal/oap/OapConf.scala" beforeDir="false" afterPath="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/internal/oap/OapConf.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -54,8 +52,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/test/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManagerSuite.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="17" column="18" lean-forward="true" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
+            <state relative-caret-position="175">
+              <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -64,6 +62,18 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/internal/oap/OapConf.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="234">
+              <caret line="446" column="12" selection-start-line="446" selection-start-column="12" selection-end-line="446" selection-end-column="12" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManager.scala">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="384">
@@ -93,6 +103,7 @@
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md" />
         <option value="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManager.scala" />
+        <option value="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/internal/oap/OapConf.scala" />
       </list>
     </option>
   </component>
@@ -224,20 +235,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/test/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManagerSuite.scala">
+    <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManager.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" column="18" lean-forward="true" selection-start-line="17" selection-start-column="18" selection-end-line="17" selection-end-column="18" />
+        <state relative-caret-position="384">
+          <caret line="128" selection-start-line="128" selection-end-line="128" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManager.scala">
+    <entry file="file://$PROJECT_DIR$/src/test/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManagerSuite.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="384">
-          <caret line="128" selection-start-line="128" selection-end-line="128" />
+        <state relative-caret-position="175">
+          <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/internal/oap/OapConf.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="234">
+          <caret line="446" column="12" selection-start-line="446" selection-start-column="12" selection-end-line="446" selection-end-column="12" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
