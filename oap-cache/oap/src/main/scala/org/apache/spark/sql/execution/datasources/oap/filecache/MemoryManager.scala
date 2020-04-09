@@ -114,28 +114,18 @@ private[sql] object MemoryManager extends Logging {
       conf.get(
         configEntry.key,
         configEntry.defaultValue.get).toLowerCase
-    val memoryManagerOpt =
-      conf.get(OapConf.OAP_FIBERCACHE_MEMORY_MANAGER.key, "offheap").toLowerCase
     cacheStrategyOpt match {
       case "guava" =>
+        val memoryManagerOpt =
+          conf.get(OapConf.OAP_FIBERCACHE_MEMORY_MANAGER.key, "offheap").toLowerCase
         memoryManagerOpt match {
           case "offheap" | "pm" => apply(sparkEnv, memoryManagerOpt)
           case _ => throw new UnsupportedOperationException(s"For cache strategy" +
             s" ${cacheStrategyOpt}, memorymanager should be 'offheap' or 'pm'" +
             s" but not ${memoryManagerOpt}.")
         }
-      case "nonevict" =>
-          if (!memoryManagerOpt.equals("hybrid")) {
-            logWarning(s"current spark.sql.oap.fiberCache.memory.manager: ${memoryManagerOpt} " +
-              "takes no effect, use 'hybrid' as memory manager for nonevict cache instead.")
-          }
-          new HybridMemoryManager(sparkEnv)
-      case "vmem" =>
-        if (!memoryManagerOpt.equals("tmp")) {
-          logWarning(s"current spark.sql.oap.fiberCache.memory.manager: ${memoryManagerOpt} " +
-            "takes no effect, use 'tmp' as memory manager for vmem cache instead.")
-        }
-        new TmpDramMemoryManager(sparkEnv)
+      case "nonevict" => new HybridMemoryManager(sparkEnv)
+      case "vmem" => new TmpDramMemoryManager(sparkEnv)
       case "mix" =>
         fiberType match {
           case FiberType.DATA =>
