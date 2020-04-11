@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00908221-2666-4652-bde9-8d580c757ed2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/internal/oap/OapConf.scala" beforeDir="false" afterPath="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/internal/oap/OapConf.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/OapCache.scala" beforeDir="false" afterPath="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/OapCache.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -61,11 +61,23 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/internal/oap/OapConf.scala">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="234">
-              <caret line="446" column="12" selection-start-line="446" selection-start-column="12" selection-end-line="446" selection-end-column="12" />
+            <state relative-caret-position="107">
+              <caret line="442" column="43" lean-forward="true" selection-start-line="442" selection-start-column="43" selection-end-line="442" selection-end-column="43" />
+              <folding>
+                <element signature="n#!!doc" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/OapCache.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="336">
+              <caret line="430" column="69" selection-start-line="430" selection-start-column="69" selection-end-line="430" selection-end-column="69" />
               <folding>
                 <element signature="n#!!doc" expanded="true" />
               </folding>
@@ -104,6 +116,7 @@
         <option value="$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md" />
         <option value="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManager.scala" />
         <option value="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/internal/oap/OapConf.scala" />
+        <option value="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/OapCache.scala" />
       </list>
     </option>
   </component>
@@ -257,8 +270,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/internal/oap/OapConf.scala">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="234">
-          <caret line="446" column="12" selection-start-line="446" selection-start-column="12" selection-end-line="446" selection-end-column="12" />
+        <state relative-caret-position="107">
+          <caret line="442" column="43" lean-forward="true" selection-start-line="442" selection-start-column="43" selection-end-line="442" selection-end-column="43" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/OapCache.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="336">
+          <caret line="430" column="69" selection-start-line="430" selection-start-column="69" selection-end-line="430" selection-end-column="69" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
