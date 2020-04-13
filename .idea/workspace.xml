@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00908221-2666-4652-bde9-8d580c757ed2" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/OapCache.scala" beforeDir="false" afterPath="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/OapCache.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md" beforeDir="false" afterPath="$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -16,83 +16,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/CacheMemoryAllocator.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="48" column="5" selection-start-line="48" selection-start-column="5" selection-end-line="48" selection-end-column="5" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/test/scala/org/apache/spark/sql/execution/datasources/oap/filecache/IndexDataCacheSeparationSuite.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
-              <caret line="209" column="26" selection-start-line="209" selection-start-column="26" selection-end-line="209" selection-end-column="26" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="313">
-              <caret line="300" column="40" selection-start-line="300" selection-start-column="40" selection-end-line="300" selection-end-column="40" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/test/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManagerSuite.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="175">
-              <caret line="25" lean-forward="true" selection-start-line="25" selection-end-line="25" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/internal/oap/OapConf.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="107">
-              <caret line="442" column="43" lean-forward="true" selection-start-line="442" selection-start-column="43" selection-end-line="442" selection-end-column="43" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/OapCache.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="336">
-              <caret line="430" column="69" selection-start-line="430" selection-start-column="69" selection-end-line="430" selection-end-column="69" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManager.scala">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="384">
-              <caret line="128" selection-start-line="128" selection-end-line="128" />
-              <folding>
-                <element signature="n#!!doc" expanded="true" />
-              </folding>
+            <state relative-caret-position="425">
+              <caret line="346" column="29" lean-forward="true" selection-start-line="346" selection-start-column="29" selection-end-line="346" selection-end-column="29" />
             </state>
           </provider>
         </entry>
@@ -102,6 +30,7 @@
   <component name="FindInProjectRecents">
     <findStrings>
       <find>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</find>
+      <find>DRAM(`offheap`) as cache media, strategy `guava` as index and data cache backend</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -113,10 +42,10 @@
         <option value="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/CacheMemoryAllocator.scala" />
         <option value="$PROJECT_DIR$/oap-cache/oap/src/test/scala/org/apache/spark/sql/execution/datasources/oap/filecache/IndexDataCacheSeparationSuite.scala" />
         <option value="$PROJECT_DIR$/README.md" />
-        <option value="$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md" />
         <option value="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManager.scala" />
         <option value="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/internal/oap/OapConf.scala" />
         <option value="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/OapCache.scala" />
+        <option value="$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md" />
       </list>
     </option>
   </component>
@@ -241,17 +170,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="313">
-          <caret line="300" column="40" selection-start-line="300" selection-start-column="40" selection-end-line="300" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManager.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="384">
-          <caret line="128" selection-start-line="128" selection-end-line="128" />
+          <caret line="138" selection-start-line="138" selection-end-line="138" />
           <folding>
             <element signature="n#!!doc" expanded="true" />
           </folding>
@@ -268,6 +190,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/OapCache.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="353">
+          <caret line="431" column="9" selection-start-line="431" selection-start-column="2" selection-end-line="431" selection-end-column="9" />
+          <folding>
+            <element signature="n#!!doc" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/internal/oap/OapConf.scala">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="107">
@@ -278,13 +210,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/OapCache.scala">
+    <entry file="file://$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="430" column="69" selection-start-line="430" selection-start-column="69" selection-end-line="430" selection-end-column="69" />
-          <folding>
-            <element signature="n#!!doc" expanded="true" />
-          </folding>
+        <state relative-caret-position="425">
+          <caret line="346" column="29" lean-forward="true" selection-start-line="346" selection-start-column="29" selection-end-line="346" selection-end-column="29" />
         </state>
       </provider>
     </entry>

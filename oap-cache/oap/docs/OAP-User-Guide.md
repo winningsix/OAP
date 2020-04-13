@@ -377,40 +377,6 @@ Besides, you can verify numa binding status by confirming keywords like "numactl
 
 You can also check DCPM cache size by checking the usage of disk space using command 'df -h'. For Guava/Non-evictable strategies, the command will show disk space usage increases along with workload execution. But for vmemcache strategy, you will see disk usage becomes to cache initial size once DCPM cache initialized even workload haven't actually used so much space and this value doesn't change during workload execution.
 
-For example, We use DRAM(`offheap`) for index cache, DCPMM(`pm`) for data cache.
-Then we need these configs in spark-defaults.conf.
-```
-spark.sql.oap.index.data.cache.separation.enable          true 
-spark.sql.oap.mix.index.memory.manager                    offheap
-spark.sql.oap.mix.data.memory.manager                     pm
-```
-Or we use DRAM(`offheap`), `guava` for index cache; DCPMM(`pm`), `vmemcache` for data cache.
-```
-spark.sql.oap.index.data.cache.separation.enable          true
-spark.oap.cache.strategy                                  mix
-spark.sql.oap.fiberCache.memory.manager                   mix
-spark.sql.oap.mix.index.cache.backend                     guava
-spark.sql.oap.mix.index.memory.manager                    offheap
-spark.sql.oap.mix.data.cache.backend                      vmem
-spark.sql.oap.mix.data.memory.manager                     tmp
-```
-### Enabling Binary cache 
-We introduce binary cache for both Parquet and ORC fileformat to improve cache space utilization compared to ColumnVector cache. When enabling binary cache, you should add following configs to `spark-defaults.conf`.
-```
-spark.sql.oap.parquet.binary.cache.enabled                true      # for parquet fileformat
-spark.sql.oap.parquet.data.cache.enable                   false     # for ColumnVector, default is false
-spark.sql.oap.orc.binary.cache.enable                     true      # for orc fileformat
-spark.sql.oap.orc.data.cache.enable                       false     # for ColumnVector, default is false
-```
-
-#### Verify DCPMM cache functionality
-
-After the configuration, and you need to restart Spark Thrift Server to make the configuration changes taking effect. You can take the same steps described in [Use DRAM Cache](#Use-DRAM-Cache) to test and verify the cache is in working. 
-
-Besides, you can verify numa binding status by confirming keywords like "numactl --cpubind=1 --membind=1" contained in executor launch command.
-
-You can also check DCPM cache size by checking the usage of disk space using command 'df -h'. For Guava/Non-evictable strategies, the command will show disk space usage increases along with workload execution. But for vmemcache strategy, you will see disk usage becomes to cache initial size once DCPM cache initialized even workload haven't actually used so much space and this value doesn't change during workload execution.
-
 ## Run TPC-DS Benchmark for OAP Cache
 
 The section provides instructions and tools for running TPC-DS queries to evaluate the cache performance at various configurations. TPC-DS suite has many queries and we select 9 I/O intensive queries for making the performance evaluation simple.
