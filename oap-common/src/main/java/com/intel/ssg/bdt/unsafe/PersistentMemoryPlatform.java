@@ -15,13 +15,17 @@
  * limitations under the License.
  */
 
-package org.apache.spark.unsafe;
-
-import java.io.File;
+package com.intel.ssg.bdt.unsafe;
 
 import com.google.common.base.Preconditions;
+import com.intel.ssg.bdt.util.NativeLibraryLoader;
 
-import org.apache.spark.util.NativeLibraryLoader;
+import java.io.File;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.nio.ByteBuffer;
+
+import sun.misc.Cleaner;
 
 /**
  * A platform used to allocate/free volatile memory from
@@ -29,9 +33,9 @@ import org.apache.spark.util.NativeLibraryLoader;
  * e.g. Intel Optane DC persistent memory.
  */
 public class PersistentMemoryPlatform {
+
   private static volatile boolean initialized = false;
   private static final String LIBNAME = "pmplatform";
-
   static {
     NativeLibraryLoader.load(LIBNAME);
   }
@@ -70,6 +74,34 @@ public class PersistentMemoryPlatform {
    * Platform which same as OFF_HEAP memory.
    */
   public static native long allocateVolatileMemory(long size);
+
+  /**
+   * Allocate direct buffer from persistent memory.
+   * @param size the requested size
+   * @return the byte buffer which same as Platform.allocateDirectBuffer, it can be operated by
+   * Platform which same as OFF_HEAP memory.
+   */
+  public static ByteBuffer allocateVolatileDirectBuffer(int size) {
+    try {
+      Class<?> cls = Class.forName("java.nio.DirectByteBuffer");
+      Constructor<?> constructor = cls.getDeclaredConstructor(Long.TYPE, Integer.TYPE);
+      constructor.setAccessible(true);
+      Field cleanerField = cls.getDeclaredField("cleaner");
+      cleanerField.setAccessible(true);
+      final long memory = allocateVolatileMemory(size);
+      ByteBuffer buffer = (ByteBuffer) constructor.newInstance(memory, size);
+      Cleaner cleaner = Cleaner.create(buffer, new Runnable() {
+        @Override
+        public void run() {
+          freeMemory(memory);
+        }
+      });
+      cleanerField.set(buffer, cleaner);
+      return buffer;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   /**
    * Get the actual occupied size of the given address. The occupied size should be different
