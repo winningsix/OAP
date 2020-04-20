@@ -2,7 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="00908221-2666-4652-bde9-8d580c757ed2" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/oap-cache/oap/src/test/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManagerConfigSuite.scala" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md" beforeDir="false" afterPath="$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManager.scala" beforeDir="false" afterPath="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/MemoryManager.scala" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/OapCache.scala" beforeDir="false" afterPath="$PROJECT_DIR$/oap-cache/oap/src/main/scala/org/apache/spark/sql/execution/datasources/oap/filecache/OapCache.scala" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,8 +22,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="425">
-              <caret line="346" column="29" lean-forward="true" selection-start-line="346" selection-start-column="29" selection-end-line="346" selection-end-column="29" />
+            <state relative-caret-position="-99">
+              <caret line="306" column="64" selection-start-line="306" selection-start-column="64" selection-end-line="306" selection-end-column="64" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/spark2.4.4/scala/org/apache/spark/SparkEnv.scala">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="11" column="41" selection-start-line="11" selection-start-column="41" selection-end-line="11" selection-end-column="41" />
             </state>
           </provider>
         </entry>
@@ -31,6 +43,8 @@
     <findStrings>
       <find>&lt;&lt;&lt;&lt;&lt;&lt;&lt;</find>
       <find>DRAM(`offheap`) as cache media, strategy `guava` as index and data cache backend</find>
+      <find>Enabling</find>
+      <find>&lt;&lt;&lt;&lt;&lt;</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -210,10 +224,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/oap-cache/oap/src/main/spark2.4.4/scala/org/apache/spark/SparkEnv.scala">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="11" column="41" selection-start-line="11" selection-start-column="41" selection-end-line="11" selection-end-column="41" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/oap-cache/oap/docs/OAP-User-Guide.md">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="346" column="29" lean-forward="true" selection-start-line="346" selection-start-column="29" selection-end-line="346" selection-end-column="29" />
+        <state relative-caret-position="-99">
+          <caret line="306" column="64" selection-start-line="306" selection-start-column="64" selection-end-line="306" selection-end-column="64" />
         </state>
       </provider>
     </entry>
