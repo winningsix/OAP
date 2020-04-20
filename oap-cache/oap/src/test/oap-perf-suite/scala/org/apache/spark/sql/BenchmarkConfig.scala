@@ -390,6 +390,7 @@ trait ParquetVsOrcConfigSet extends BenchmarkConfigSelector{
     }
 }
 
+
 trait LocalClusterConfigSet extends BenchmarkConfigSelector {
   // TODO: choose conf
   def allConfigurations: Seq[BenchmarkConfig] = Seq(
@@ -399,6 +400,7 @@ trait LocalClusterConfigSet extends BenchmarkConfigSelector {
       .setBenchmarkConf(BenchmarkConfig.INDEX_ENABLE, "true")
       .setSparkConf("spark.memory.offHeap.enabled", "true")
       .setSparkConf("spark.memory.offHeap.size", "100m")
+
   )
 }
 
