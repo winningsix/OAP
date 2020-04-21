@@ -255,10 +255,14 @@ You need to change the value for spark.executor.instances, spark.sql.oap.fiberCa
 
 Guava cache is based on memkind library, built on top of jemalloc and provides memory characteristics. To use it in your workload, follow [prerequisites](#prerequisites-1) to set up DCPMM hardware and memkind library correctly. Then follow bellow configurations.
 
+Memkind library also support DAX KMEM mode. Refer [Kernel](https://github.com/memkind/memkind#kernel), this chapter will guide how to configure persistent memory as system ram. Or [Memkind support for KMEM DAX option](https://pmem.io/2020/01/20/memkind-dax-kmem.html) for more details.
+
+Please note that DAX KMEM mode need kernel version 5.x and memkind version 1.10 or above.
+
 For Parquet data format, provides following conf options:
 ```
 spark.sql.oap.parquet.data.cache.enable           true
-spark.sql.oap.fiberCache.memory.manager           pm
+spark.sql.oap.fiberCache.memory.manager           pm / kmem
 spark.oap.cache.strategy                          guava
 spark.sql.oap.fiberCache.persistent.memory.initial.size    *g
 spark.sql.extensions                              org.apache.spark.sql.OapExtensions
@@ -268,7 +272,7 @@ For Orc data format, provides following conf options:
 spark.sql.orc.copyBatchToSpark                   true
 spark.sql.oap.orc.data.cache.enable              true
 spark.sql.oap.orc.enable                         true
-spark.sql.oap.fiberCache.memory.manager          pm
+spark.sql.oap.fiberCache.memory.manager          pm / kmem
 spark.oap.cache.strategy                         guava
 spark.sql.oap.fiberCache.persistent.memory.initial.size      *g
 spark.sql.extensions                             org.apache.spark.sql.OapExtensions
