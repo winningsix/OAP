@@ -80,12 +80,12 @@ abstract class ShuffleWriterPerfEvaluationBase {
     }
   }
 
-  class TestBlockManager(tempDir: File, memoryManager: MemoryManager, remoteConf: SparkConf)
+  class TestBlockManager(tempDir: File, memoryManager: MemoryManager, conf: SparkConf)
     extends BlockManager("0",
     rpcEnv,
     null,
     serializerManager,
-    remoteConf,
+      conf,
     memoryManager,
     null,
     null,
@@ -99,6 +99,7 @@ abstract class ShuffleWriterPerfEvaluationBase {
   protected var tempDir: File = _
 
   protected var blockManager: BlockManager = _
+  protected var blockResolver: IndexShuffleBlockResolver = _
   protected var blockResolverRemote: RemoteShuffleBlockResolver = _
 
   protected var memoryManager: TestMemoryManager = _
@@ -113,18 +114,21 @@ abstract class ShuffleWriterPerfEvaluationBase {
   when(rpcEnv.setupEndpoint(any[String], any[RpcEndpoint])).thenReturn(rpcEndpointRef)
 
   def globalSetup(reducers: Int, storageMasterUri: String, shuffleDir: String,
-                  remoteConf: SparkConf): ShuffleBlockResolver = {
+    conf: SparkConf, remoteConf: SparkConf): ShuffleBlockResolver = {
     partitioner = new HashPartitioner(reducers)
     when(dependency.partitioner).thenReturn(partitioner)
 
 
     // For vanilla Spark shuffle directory customization
     tempDir = Utils.createTempDir(shuffleDir)
-    memoryManager = new TestMemoryManager(remoteConf)
+    memoryManager = new TestMemoryManager(conf)
     // Infinite memory
     // memoryManager.limit(MAXIMUM_PAGE_SIZE_BYTES)
 
-    blockManager = new TestBlockManager(tempDir, memoryManager, remoteConf)
+    blockManager = new TestBlockManager(tempDir, memoryManager, conf)
+    blockResolver = new IndexShuffleBlockResolver(
+      conf,
+      blockManager)
     blockResolverRemote = new RemoteShuffleBlockResolver(remoteConf)
     blockResolverRemote
   }

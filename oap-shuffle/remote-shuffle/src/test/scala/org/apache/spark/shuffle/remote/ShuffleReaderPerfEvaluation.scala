@@ -59,6 +59,7 @@ object ShuffleReaderPerfEvaluation {
     mapStatus: MapStatus,
     storageMasterUri: String,
     shuffleDir: String,
+    conf: SparkConf,
     remoteConf: SparkConf): Unit = {
 
     MockitoAnnotations.initMocks(this)
@@ -87,6 +88,24 @@ object ShuffleReaderPerfEvaluation {
   }
 
   def getRemoteReader(
+    startPartition: Int,
+    endPartition: Int): RemoteShuffleReader[Int, ByteBuffer] = {
+
+    val taskContext = new TestTaskContext
+    TaskContext.setTaskContext(taskContext)
+
+    new RemoteShuffleReader[Int, ByteBuffer](
+      shuffleHandle,
+      remoteBlockResolver.asInstanceOf[RemoteShuffleBlockResolver],
+      startPartition,
+      endPartition,
+      taskContext,
+      serializerManager,
+      mapOutputTracker
+    )
+  }
+
+  def getReader(
     startPartition: Int,
     endPartition: Int): RemoteShuffleReader[Int, ByteBuffer] = {
 
