@@ -40,7 +40,6 @@
     <modules>
         <module>oap-common</module>
         <module>oap-cache/oap</module>
-        <module>oap-shuffle/remote-shuffle</module>
     </modules>
 
 </project>
