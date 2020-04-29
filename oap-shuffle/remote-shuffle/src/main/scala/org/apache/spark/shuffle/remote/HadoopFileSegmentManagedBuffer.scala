@@ -19,9 +19,6 @@ package org.apache.spark.shuffle.remote
 
 import java.io.{ByteArrayInputStream, InputStream, IOException}
 import java.nio.ByteBuffer
-import java.util.concurrent.ConcurrentHashMap
-
-import scala.collection.mutable.HashMap
 
 import io.netty.buffer.{ByteBuf, Unpooled}
 import org.apache.hadoop.fs.{FSDataInputStream, Path}
@@ -40,7 +37,7 @@ private[spark] class HadoopFileSegmentManagedBuffer(
     val file: Path, val offset: Long, val length: Long, var eagerRequirement: Boolean = false)
     extends ManagedBuffer with Logging {
 
-  import HadoopFileSegmentManagedBuffer._
+  import HadoopFileSegmentManagedBuffer.fs
 
   private lazy val dataStream: InputStream = {
     if (length == 0) {
@@ -59,21 +56,7 @@ private[spark] class HadoopFileSegmentManagedBuffer(
     } else {
       var is: FSDataInputStream = null
       try {
-        is = {
-          if (reuseFileHandle) {
-            val pathToHandleMap = handleCache.get(Thread.currentThread().getId)
-            if (pathToHandleMap == null) {
-              val res = fs.open(file)
-              handleCache.put(Thread.currentThread().getId,
-                new HashMap[Path, FSDataInputStream]() += (file -> res))
-              res
-            } else {
-              pathToHandleMap.getOrElseUpdate(file, fs.open(file))
-            }
-          } else {
-            fs.open(file)
-          }
-        }
+        is = fs.open(file)
         is.seek(offset)
         val array = new Array[Byte](length.toInt)
         is.readFully(array)
@@ -87,10 +70,7 @@ private[spark] class HadoopFileSegmentManagedBuffer(
           }
           throw new IOException(errorMessage, e)
       } finally {
-        if (!reuseFileHandle) {
-          // Immediately close it if disabled file handle reuse
-          JavaUtils.closeQuietly(is)
-        }
+        JavaUtils.closeQuietly(is)
       }
     }
   }
@@ -133,10 +113,6 @@ private[spark] class HadoopFileSegmentManagedBuffer(
 
 private[remote] object HadoopFileSegmentManagedBuffer {
   private val fs = RemoteShuffleManager.getFileSystem
-  private[remote] lazy val handleCache =
-    new ConcurrentHashMap[Long, HashMap[Path, FSDataInputStream]]()
-  private val reuseFileHandle =
-    RemoteShuffleManager.getConf.get(RemoteShuffleConf.REUSE_FILE_HANDLE)
 }
 
 /**
