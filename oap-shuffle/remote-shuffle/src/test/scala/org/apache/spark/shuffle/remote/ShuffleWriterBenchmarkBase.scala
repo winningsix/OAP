@@ -18,45 +18,50 @@
 package org.apache.spark.shuffle.remote
 
 import java.io.File
-import java.nio.ByteBuffer
 import java.util.UUID
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
+import scala.util.Random
 
+import org.apache.commons.io.FileUtils
 import org.mockito._
 import org.mockito.Answers.RETURNS_SMART_NULLS
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.mock
 import org.mockito.Mockito.when
 
 import org.apache.spark._
+import org.apache.spark.benchmark.BenchmarkBase
 import org.apache.spark.executor.TaskMetrics
 import org.apache.spark.memory.{MemoryManager, TaskMemoryManager, TestMemoryManager}
 import org.apache.spark.rpc.{RpcEndpoint, RpcEndpointRef, RpcEnv}
 import org.apache.spark.serializer.{KryoSerializer, Serializer, SerializerManager}
-import org.apache.spark.shuffle.{IndexShuffleBlockResolver, ShuffleBlockResolver}
+import org.apache.spark.shuffle.{IndexShuffleBlockResolver, ShuffleWriter}
 import org.apache.spark.storage.{BlockManager, DiskBlockManager, TempShuffleBlockId}
-import org.apache.spark.util.Utils
+import org.apache.spark.util.{Benchmark, Utils}
 
-abstract class ShuffleWriterPerfEvaluationBase {
 
-  protected val defaultConf = new SparkConf(loadDefaults = false)
+abstract class ShuffleWriterBenchmarkBase extends BenchmarkBase {
+
+  protected val MIN_NUM_ITERS = 10
+  protected val DATA_SIZE_SMALL = 1000
+  protected val DATA_SIZE_MIDDLE = 100000
+
+  protected val DEFAULT_DATA_STRING_SIZE = 5
 
   // This is only used in the writer constructors, so it's ok to mock
   @Mock(answer = RETURNS_SMART_NULLS) protected var dependency:
-  ShuffleDependency[Int, ByteBuffer, ByteBuffer] = _
+  ShuffleDependency[String, String, String] = _
   // This is only used in the stop() function, so we can safely mock this without affecting perf
-  protected val taskContext: ThreadLocal[TaskContext] = new ThreadLocal[TaskContext]
+  @Mock(answer = RETURNS_SMART_NULLS) protected var taskContext: TaskContext = _
   @Mock(answer = RETURNS_SMART_NULLS) protected var rpcEnv: RpcEnv = _
   @Mock(answer = RETURNS_SMART_NULLS) protected var rpcEndpointRef: RpcEndpointRef = _
 
-  protected val serializer: Serializer = new KryoSerializer(defaultConf)
+  protected  val serializer: Serializer = new KryoSerializer(defaultConf)
+  protected val partitioner: HashPartitioner = new HashPartitioner(10)
   protected val serializerManager: SerializerManager =
     new SerializerManager(serializer, defaultConf)
   protected val shuffleMetrics: TaskMetrics = new TaskMetrics
-  protected var partitioner: HashPartitioner = _
-
 
   protected val tempFilesCreated: ArrayBuffer[File] = new ArrayBuffer[File]
   protected val filenameToFile: mutable.Map[String, File] = new mutable.HashMap[String, File]
@@ -80,12 +85,11 @@ abstract class ShuffleWriterPerfEvaluationBase {
     }
   }
 
-  class TestBlockManager(tempDir: File, memoryManager: MemoryManager, conf: SparkConf)
-    extends BlockManager("0",
+  class TestBlockManager(tempDir: File, memoryManager: MemoryManager) extends BlockManager("0",
     rpcEnv,
     null,
     serializerManager,
-      conf,
+    defaultConf,
     memoryManager,
     null,
     null,
@@ -103,45 +107,91 @@ abstract class ShuffleWriterPerfEvaluationBase {
   protected var blockResolverRemote: RemoteShuffleBlockResolver = _
 
   protected var memoryManager: TestMemoryManager = _
+  protected var taskMemoryManager: TaskMemoryManager = _
 
   MockitoAnnotations.initMocks(this)
+  when(dependency.partitioner).thenReturn(partitioner)
   when(dependency.serializer).thenReturn(serializer)
   when(dependency.shuffleId).thenReturn(0)
-  when(dependency.mapSideCombine).thenReturn(false)
-  when(dependency.aggregator).thenReturn(None)
-  when(dependency.keyOrdering).thenReturn(None)
-
+  when(taskContext.taskMetrics()).thenReturn(shuffleMetrics)
   when(rpcEnv.setupEndpoint(any[String], any[RpcEndpoint])).thenReturn(rpcEndpointRef)
 
-  def globalSetup(reducers: Int, storageMasterUri: String, shuffleDir: String,
-    conf: SparkConf, remoteConf: SparkConf): ShuffleBlockResolver = {
-    partitioner = new HashPartitioner(reducers)
-    when(dependency.partitioner).thenReturn(partitioner)
-
-
-    // For vanilla Spark shuffle directory customization
-    tempDir = Utils.createTempDir(shuffleDir)
-    memoryManager = new TestMemoryManager(conf)
-    // Infinite memory
-    // memoryManager.limit(MAXIMUM_PAGE_SIZE_BYTES)
-
-    blockManager = new TestBlockManager(tempDir, memoryManager, conf)
-    blockResolver = new IndexShuffleBlockResolver(
-      conf,
-      blockManager)
-    blockResolverRemote = new RemoteShuffleBlockResolver(remoteConf)
-    blockResolverRemote
-  }
-
-  protected def setup(): TaskMemoryManager = {
-    val taskContext = mock(classOf[TaskContext])
-    this.taskContext.set(taskContext)
-
-    when(taskContext.taskMetrics()).thenReturn(shuffleMetrics)
-
-    val taskMemoryManager = new TaskMemoryManager(memoryManager, 0)
+  protected def setEnvAndContext(): Unit = {
     when(taskContext.taskMemoryManager()).thenReturn(taskMemoryManager)
     TaskContext.setTaskContext(taskContext)
-    taskMemoryManager
   }
+
+  def setup(): Unit = {
+    TaskContext.setTaskContext(taskContext)
+    memoryManager = new TestMemoryManager(defaultConf)
+    memoryManager.limit(MAXIMUM_PAGE_SIZE_BYTES)
+    taskMemoryManager = new TaskMemoryManager(memoryManager, 0)
+    tempDir = Utils.createTempDir()
+    blockManager = new TestBlockManager(tempDir, memoryManager)
+    blockResolver = new IndexShuffleBlockResolver(
+      defaultConf,
+      blockManager)
+    blockResolverRemote = new RemoteShuffleBlockResolver(defaultConfRemote)
+  }
+
+  // Some configuration may only apply to one single shuffle writer, for example, no
+  // RemoteShuffleWriters support transferTo currently.
+  protected def addBenchmarkCaseForSingleWriter(
+      benchmark: Benchmark,
+      name: String,
+      size: Int,
+      writerSupplierInner: () => ShuffleWriter[String, String],
+      numSpillFiles: Option[Int] = Option.empty): Unit = {
+    benchmark.addTimerCase(name) { timer =>
+      setup()
+      val writer = writerSupplierInner()
+      val dataIterator = createDataIterator(size)
+      try {
+        timer.startTiming()
+        writer.write(dataIterator)
+        timer.stopTiming()
+      } finally {
+        writer.stop(true)
+      }
+      teardown()
+    }
+  }
+
+  def addBenchmarkCaseFor2Writers(
+      benchmark: Benchmark,
+      name: String,
+      size: Int,
+      writerSupplier: () => ShuffleWriter[String, String],
+      writerSupplierRemote: () => ShuffleWriter[String, String],
+      numSpillFiles: Option[Int] = Option.empty): Unit = {
+    addBenchmarkCaseForSingleWriter(benchmark, name, size, writerSupplier, numSpillFiles)
+    addBenchmarkCaseForSingleWriter(
+      benchmark, s"$name(R)", size, writerSupplierRemote, numSpillFiles)
+  }
+
+  def teardown(): Unit = {
+    FileUtils.deleteDirectory(tempDir)
+    tempFilesCreated.clear()
+    filenameToFile.clear()
+  }
+
+  protected class DataIterator (size: Int)
+      extends Iterator[Product2[String, String]] {
+    val random = new Random(123)
+    var count = 0
+    override def hasNext: Boolean = {
+      count < size
+    }
+
+    override def next(): Product2[String, String] = {
+      count+=1
+      val string = random.alphanumeric.take(DEFAULT_DATA_STRING_SIZE).mkString
+      (string, string)
+    }
+  }
+
+  def createDataIterator(size: Int): DataIterator = {
+    new DataIterator(size)
+  }
+
 }
