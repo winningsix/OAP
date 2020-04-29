@@ -135,8 +135,7 @@ public final class RemoteBypassMergeSortShuffleWriter<K, V> extends ShuffleWrite
     if (!records.hasNext()) {
       partitionLengths = new long[numPartitions];
       shuffleBlockResolver.writeIndexFileAndCommit(shuffleId, mapId, partitionLengths, null);
-      mapStatus = MapStatus$.MODULE$.apply(
-          RemoteShuffleManager$.MODULE$.getResolver().shuffleServerId(), partitionLengths);
+      mapStatus = MapStatus$.MODULE$.apply(blockManager.shuffleServerId(), partitionLengths);
       return;
     }
     final SerializerInstance serInstance = serializer.newInstance();
