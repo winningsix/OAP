@@ -1,8 +1,5 @@
 package com.intel.oap.common.storage;
 
-import com.google.common.primitives.Bytes;
-
-import java.util.Arrays;
 import java.util.Iterator;
 
 //FIXME should new this by parameter instead of passing in by Spark
@@ -23,11 +20,6 @@ public abstract class PMemDataStore {
         fileChunk = new FileChunk();
     }
 
-    /**
-     *
-     * @param id logical ID
-     * @return
-     */
     public Iterator<Chunk> getInputChunkIterator(){
         return new Iterator<Chunk>() {
             long chuckID = 0;
@@ -40,12 +32,12 @@ public abstract class PMemDataStore {
             @Override
             public Chunk next() {
                 chuckID++;
-                byte[] physicalID = Bytes.concat(PMemDataStore.LongToBytes(chuckID), id);
-                Chunk chuck = impl.getChunk(physicalID);
-                if (chuck == null) {
-                    return fileChunk;
-                }
-                return chuck;
+//                byte[] physicalID = Bytes.concat(PMemDataStore.LongToBytes(chuckID), id);
+//                Chunk chuck = impl.getChunk(physicalID);
+//                if (chuck == null) {
+//                    return fileChunk;
+//                }
+                return null;
             }
         };
     }
@@ -58,8 +50,10 @@ public abstract class PMemDataStore {
      * @return
      */
     public Iterator<Chunk> getOutputChunkIterator() {
-
+        return null;
     }
 
     public abstract byte [] getPhysicalIDbyLogicalID(byte[] id);
+
+
 }

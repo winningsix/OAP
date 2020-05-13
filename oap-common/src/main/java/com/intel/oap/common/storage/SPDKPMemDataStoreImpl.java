@@ -19,12 +19,7 @@ public class SPDKPMemDataStoreImpl extends PMemDataStore {
     }
 
     @Override
-    public StreamMeta getStreamMeta(byte[] id) {
-        throw new RuntimeException("Unsupported operation");
-    }
-
-    @Override
-    public void putStreamMeta(byte[] id, StreamMeta streamMeta) {
-        throw new RuntimeException("Unsupported operation");
+    public byte[] getPhysicalIDbyLogicalID(byte[] id) {
+        throw new RuntimeException("Unsupported method");
     }
 }

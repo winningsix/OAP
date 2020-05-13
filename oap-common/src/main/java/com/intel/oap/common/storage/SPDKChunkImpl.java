@@ -14,7 +14,6 @@ public class SPDKChunkImpl implements ChunkAPI {
         fileDir = properties.getProperty("oap.path");
     }
 
-    @Override
     public void write(byte[] id, byte[] value) {
         // TODO move initialization logic out
         if (file == null) {
@@ -62,17 +61,12 @@ public class SPDKChunkImpl implements ChunkAPI {
     }
 
     @Override
-    public boolean read(byte[] id, int offset, int len) {
-        return false;
-    }
-
-    @Override
     public void release() {
 
     }
 
     @Override
-    public void free(PMemChunk pMemChunk) {
+    public void free(Chunk chunk) {
 
     }
 }
