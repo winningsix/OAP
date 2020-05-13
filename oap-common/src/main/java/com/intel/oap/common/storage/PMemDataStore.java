@@ -28,16 +28,7 @@ public abstract class PMemDataStore {
      * @param id logical ID
      * @return
      */
-    public abstract Iterator<Chunk> getInputChunkIterator();
-
-    /**
-     * provide trunk for output stream write, need update metadata for
-     * this stream, like chunkID++, totalsize, etc. need implement methods next()
-     * @param id
-     * @param chunkSize
-     * @return
-     */
-    public Iterator<Chunk> getOutputChunkIterator() {
+    public Iterator<Chunk> getInputChunkIterator(){
         return new Iterator<Chunk>() {
             long chuckID = 0;
 
@@ -59,23 +50,16 @@ public abstract class PMemDataStore {
         };
     }
 
-    private static byte[] LongToBytes(long vl) {
-        //TODO
-        return null;
+    /**
+     * provide trunk for output stream write, need update metadata for
+     * this stream, like chunkID++, totalsize, etc. need implement methods next()
+     * @param id
+     * @param chunkSize
+     * @return
+     */
+    public Iterator<Chunk> getOutputChunkIterator() {
+
     }
 
-    /**
-     * get metadata for this logical stream with format <Long + Int + boolean>
-     * @param id logical ID
-     * @return StreamMeta
-     */
-    public abstract StreamMeta getStreamMeta(byte[] id);
-
-    /**
-     * put metadata info in pmem? or HashMap?
-     * @param id logical ID
-     * @param streamMeta
-     */
-    public abstract void putStreamMeta(byte[] id, StreamMeta streamMeta);
-
+    public abstract byte [] getPhysicalIDbyLogicalID(byte[] id);
 }
