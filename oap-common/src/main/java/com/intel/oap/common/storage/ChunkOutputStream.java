@@ -24,7 +24,8 @@ public class ChunkOutputStream extends FileOutputStream {
 
     public void write(byte b[]) throws IOException {
         byteBuffer.put(b); // TODO overflow
-        if(byteBuffer.remaining() == 0){ // FIXME
+        if(byteBuffer.remaining() == 0){
+            // FIXME prototype code
             currentBlock = pMemManager.pMemDataStore.getOutputChunkIterator().next();
             currentBlock.writeDataToStore(b, -1, b.length);
         }

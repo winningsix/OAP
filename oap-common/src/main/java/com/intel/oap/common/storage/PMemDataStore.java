@@ -1,5 +1,8 @@
 package com.intel.oap.common.storage;
 
+import com.google.common.primitives.Bytes;
+
+import java.util.Arrays;
 import java.util.Iterator;
 
 //FIXME should new this by parameter instead of passing in by Spark
@@ -9,8 +12,15 @@ import java.util.Iterator;
  */
 public abstract class PMemDataStore {
     byte[] id;
-    public PMemDataStore(byte [] id){
+    ChunkAPI impl;
+    ChunkAPI fallback;
+    FileChunk fileChunk;
+    MemoryStats stats;
+
+    public PMemDataStore(byte [] id, MemoryStats stats){
         this.id = id;
+        this.stats = stats;
+        fileChunk = new FileChunk();
     }
 
     /**
@@ -18,7 +28,7 @@ public abstract class PMemDataStore {
      * @param id logical ID
      * @return
      */
-    public abstract Iterator<PMemChunk> getInputChunkIterator();
+    public abstract Iterator<Chunk> getInputChunkIterator();
 
     /**
      * provide trunk for output stream write, need update metadata for
@@ -27,7 +37,32 @@ public abstract class PMemDataStore {
      * @param chunkSize
      * @return
      */
-    public abstract Iterator<PMemChunk> getOutputChunkIterator();
+    public Iterator<Chunk> getOutputChunkIterator() {
+        return new Iterator<Chunk>() {
+            long chuckID = 0;
+
+            @Override
+            public boolean hasNext() {
+                throw new RuntimeException("Unsupported operation");
+            }
+
+            @Override
+            public Chunk next() {
+                chuckID++;
+                byte[] physicalID = Bytes.concat(PMemDataStore.LongToBytes(chuckID), id);
+                Chunk chuck = impl.getChunk(physicalID);
+                if (chuck == null) {
+                    return fileChunk;
+                }
+                return chuck;
+            }
+        };
+    }
+
+    private static byte[] LongToBytes(long vl) {
+        //TODO
+        return null;
+    }
 
     /**
      * get metadata for this logical stream with format <Long + Int + boolean>

@@ -4,15 +4,9 @@ package com.intel.oap.common.storage;
  * expose methods for high level stream to write/read data from different backend
  */
 public interface ChunkAPI {
-    /**
-     * trunkID: logicalID + trunkIndex
-     * @param id  unique trunkID, mapping to physical pmem address
-     * @param value value to write on pmem
-     */
-    void write(byte[] id, byte[] value);
 
     /**
-     * check whether this trunk exists
+     * check whether this chunk exists FIXME do we need this?
      * @param id trunkID
      * @return
      */
@@ -23,24 +17,16 @@ public interface ChunkAPI {
      * @param id trunkID
      * @return base address of trunk with id
      */
-    public long getChunk(byte[] id);
+    public Chunk getChunk(byte[] id);
 
 
     /**
      * update pMemManager.pMemDataStore with <trunkID, pMemBlock>   ?????
      * @param id
-     * @param pMemBlock
+     * @param chunk
      */
-    public void putChunk(byte[] id, UnsafeMemoryBlock pMemBlock);
+    public void putChunk(byte[] id, Chunk chunk);
 
-    /**
-     *
-     * @param id unique trunkID
-     * @param offset start position of read
-     * @param len  length of bytes to read
-     * @return
-     */
-    public boolean read(byte[] id, int offset, int len);
 
     /**
      * action when read done of current Chunk
@@ -49,7 +35,7 @@ public interface ChunkAPI {
 
     /**
      * free pmem space when chunk life cycle end
-     * @param pMemChunk
+     * @param chunk
      */
-    public void free(PMemChunk pMemChunk);
+    public void free(Chunk chunk);
 }

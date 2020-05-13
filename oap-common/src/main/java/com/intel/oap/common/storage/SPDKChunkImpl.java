@@ -52,12 +52,12 @@ public class SPDKChunkImpl implements ChunkAPI {
     }
 
     @Override
-    public long getChunk(byte[] id) {
-        return 0;
+    public Chunk getChunk(byte[] id) {
+        return null;
     }
 
     @Override
-    public void putChunk(byte[] id, UnsafeMemoryBlock pMemBlock) {
+    public void putChunk(byte[] id, Chunk chunk) {
 
     }
 

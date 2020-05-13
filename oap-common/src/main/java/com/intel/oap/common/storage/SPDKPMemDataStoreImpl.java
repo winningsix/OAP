@@ -2,19 +2,19 @@ package com.intel.oap.common.storage;
 
 import java.util.Iterator;
 
-public class SPDKPMemDataStoreImpl implements PMemDataStore {
+@Deprecated
+public class SPDKPMemDataStoreImpl extends PMemDataStore {
+    public SPDKPMemDataStoreImpl(byte[] id, MemoryStats stats) {
+        super(id, stats);
+    }
+
     @Override
-    public boolean contains(byte[] id) {
+    public Iterator<Chunk> getInputChunkIterator() {
         throw new RuntimeException("Unsupported operation");
     }
 
     @Override
-    public Iterator<PMemChunk> getInputChunkIterator() {
-        throw new RuntimeException("Unsupported operation");
-    }
-
-    @Override
-    public Iterator<PMemChunk> getOutputChunkIterator() {
+    public Iterator<Chunk> getOutputChunkIterator() {
         return null;
     }
 
